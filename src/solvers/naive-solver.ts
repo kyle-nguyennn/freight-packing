@@ -1,10 +1,11 @@
-import { Dimensions, ContainerSpec } from "../interfaces";
+import { ContainerSpec } from "../interfaces";
 import { ContainerState } from "../models/container";
 import { ContainerResult, Product } from "../models/extended-types";
 import { dimensionsToArray, volume, zip } from "../utils";
 import { ISolver } from "./solver-base";
 
 export class FirstFitSolver implements ISolver {
+    // My naive implementation: first fit
     fitProductToContainer(product: Product, container: ContainerState): number {
         let productDims = dimensionsToArray(product.dimensions);
         let containerDims = dimensionsToArray(container.dimensions);
