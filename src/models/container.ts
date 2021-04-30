@@ -1,4 +1,5 @@
 import { ContainerSpec, Dimensions } from "../interfaces";
+import { volume } from "../utils";
 
 export class ContainerState implements ContainerSpec{
     constructor(public containerType: string, public dimensions: Dimensions,
@@ -9,7 +10,7 @@ export class ContainerState implements ContainerSpec{
     }
 
     volume(): number {
-        return this.dimensions.height * this.dimensions.length * this.dimensions.width;
+        return volume(this.dimensions);
     }
 
     getSpec(): ContainerSpec {
