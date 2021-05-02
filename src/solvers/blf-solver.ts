@@ -1,9 +1,9 @@
-import { Dimensions, ContainerSpec } from "../interfaces";
+import { ContainerSpec } from "../interfaces";
 import { ContainerState } from "../models/container";
 import { ContainerResult, Product } from "../models/extended-types";
 import { ISolver } from "./solver-base";
 import * as _ from "lodash";
-import { arrayToDimension, emptySpace, EMPTY_CONTAINER_RESULT, mergeContainerResult, VIRTUAL_CONTAINER_TYPE, zeroProduct } from "../utils";
+import { emptySpace, zeroProduct } from "../utils";
 import { Knapsack3DSolver, DFSKnapsack3DSolver } from "./knapsack";
 import { Item, TripleShape } from "../models/shape";
 
@@ -22,10 +22,10 @@ export class BLFSolver implements ISolver {
         emptyVolume: number
     } | null {
         /**
-         * Fits one product in products into container and recursively call itself on the empty space of the container with the rest of the products
+         * Fits as many products to container to minimize empty space (Knapsack3D)
          * NOTE: The method mutate the state of products
          * @param products the products to be fit into container
-         * @param container always a new containerState, full retangular prism not occupied in any part
+         * @param container always a new containerState, full retangular prism NOT occupied in any part
          * @returns the ContainerResult which describe all the products it contains, and the emptyVolume left.
          */
         // stop condition

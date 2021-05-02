@@ -1,4 +1,4 @@
-import { Dimensions, ContainerSpec } from "../interfaces";
+import { ContainerSpec } from "../interfaces";
 import { ContainerState } from "../models/container";
 import { ContainerResult, Product } from "../models/extended-types";
 import { dimensionsToArray, volume, zip } from "../utils";
