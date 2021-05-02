@@ -1,5 +1,6 @@
 import { Dimensions } from "../../interfaces";
-import { dimensionsToArray, zip } from "../../utils";
+import { Item, TripleShape } from "../../models/shape";
+import { canFit, dimensionsToArray, emptySpace, mergeSpace, permutator, zip } from "../../utils";
 
 describe("Utility functions Test Cases", () => {
   test("Zip 2 arrays of number", () => {
@@ -29,4 +30,41 @@ describe("Utility functions Test Cases", () => {
       (cum, [a, b]) => cum*Math.floor(b/a), 1
     )).toEqual(expected);
   });
+
+  test("Permute array of number", () => {
+    const arr = [1,2,3];
+    expect(permutator(arr).length).toBe(6);
+  });
+
+  test("Test if obj fits in container", () => {
+    const container = new TripleShape(1, 1, 2);
+    const obj =  new TripleShape(1, 1, 1);
+    expect(canFit(container, obj)).toBeTruthy();
+  });
+
+  test("Test calculating empty space", () => {
+    const container = new TripleShape(1, 1, 2);
+    const items: Item[] = [{
+      dimensions: new TripleShape(1, 1, 1),
+      quantity: 2
+    }];
+    expect(emptySpace(container, items)).toBe(0);
+  });
+
+  test("Test merge space", () => {
+    const items1: Item[] = [{
+      dimensions: new TripleShape(1, 1, 1),
+      quantity: 2
+    }];
+    const items2: Item[] = [{
+      dimensions: new TripleShape(1, 1, 1),
+      quantity: 1
+    }];
+    const expected: Item[] = [{
+      dimensions: new TripleShape(1, 1, 1),
+      quantity: 3
+    }];
+    expect(mergeSpace(items1, items2)[0].quantity).toBe(3);
+  });
+
 });

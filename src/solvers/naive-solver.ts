@@ -1,10 +1,11 @@
-import { Dimensions, ContainerSpec } from "../interfaces";
+import { ContainerSpec } from "../interfaces";
 import { ContainerState } from "../models/container";
 import { ContainerResult, Product } from "../models/extended-types";
 import { dimensionsToArray, volume, zip } from "../utils";
 import { ISolver } from "./solver-base";
 
 export class FirstFitSolver implements ISolver {
+    // My naive implementation: first fit
     fitProductToContainer(product: Product, container: ContainerState): number {
         let productDims = dimensionsToArray(product.dimensions);
         let containerDims = dimensionsToArray(container.dimensions);
@@ -30,19 +31,20 @@ export class FirstFitSolver implements ISolver {
                 const nProductFitted = this.fitProductToContainer(product, newContainer);
                 if (nProductFitted <= 0) continue;
                 while (quantity > 0) {
-                    emptyVolume += newContainer.volume() - nProductFitted * volume(product.dimensions);
+                    const actualQuantity = Math.min(nProductFitted, quantity);
+                    emptyVolume += newContainer.volume() - actualQuantity * volume(product.dimensions);
                     containers.push({
                         containerType: newContainer.containerType,
                         containingProducts: [{
                             id: product.id,
-                            quantity: Math.min(nProductFitted, quantity)
+                            quantity: actualQuantity
                         }]
                     });
                     quantity -= nProductFitted;
                 }
             }
             if (quantity > 0) { // there's no container to hold this product
-                throw Error("Cannot fit product into any conainer.")
+                throw Error("Cannot fit product into any container.")
             }
         }
         return {
@@ -50,5 +52,4 @@ export class FirstFitSolver implements ISolver {
             emptyVolume: emptyVolume
         };
     }
-
 }

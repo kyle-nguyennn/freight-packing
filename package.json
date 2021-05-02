@@ -4,14 +4,17 @@
   "main": "main.js",
   "devDependencies": {
     "@types/jest": "^26.0.10",
+    "@types/lodash": "^4.14.168",
     "@types/node": "^14.6.0",
     "jest": "^26.4.0",
+    "lodash": "^4.17.21",
     "ts-jest": "^26.2.0",
     "typescript": "^3.9.7"
   },
   "scripts": {
     "testCases": "jest --testPathPattern=src/__tests__/testCases",
     "unitTests": "jest --testPathPattern=src/__tests__/unitTests --coverage",
+    "debug": "jest --testPathPattern=src/__tests__/unitTests/packOrders.test.ts --coverage",
     "helloWorld": "jest helloWorld.test.ts"
   }
 }
