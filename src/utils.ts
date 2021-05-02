@@ -91,5 +91,4 @@ export function mergeSpace(...args: Readonly<Item>[][]): Item[] {
 }
 
 export const canFit = (container: TripleShape, obj: TripleShape): boolean =>
-    obj.allOrientations().some(shape =>
-        zip(Object.values(shape), Object.values(container)).every(([a, b]) => a <= b));
+    zip(Object.values(obj), Object.values(container)).every(([a, b]) => a <= b);

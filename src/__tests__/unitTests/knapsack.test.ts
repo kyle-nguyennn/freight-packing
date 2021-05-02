@@ -36,7 +36,23 @@ describe("Knapsack Test Cases", () => {
         expect(result[0].quantity).toEqual(expected[0].quantity);
     });
 
-    test("Complete medium case", () => {
+    test("Complete medium case 1", () => {
+        const container = new TripleShape(2, 2, 2);
+        const objs: Item[] = [
+            {
+                dimensions: new TripleShape(2, 1, 1),
+                quantity: 4
+            }];
+        const result = solver.solve(objs, container);
+        const expected = [{
+            dimensions: new TripleShape(2, 2, 1),
+            quantity: 4
+        }];
+        expect(result.length).toEqual(expected.length);
+        expect(result[0].quantity).toEqual(expected[0].quantity);
+    });
+
+    test("Complete medium case 2", () => {
         const container = new TripleShape(30, 30, 30);
         const objs: Item[] = [
             {
