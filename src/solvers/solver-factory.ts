@@ -1,4 +1,4 @@
-import { BLFSolver } from "./blf-heuristic-solver";
+import { BLFSolver } from "./blf-solver";
 import { FirstFitSolver } from "./naive-solver";
 import { ISolver } from "./solver-base";
 

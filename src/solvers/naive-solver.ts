@@ -31,12 +31,13 @@ export class FirstFitSolver implements ISolver {
                 const nProductFitted = this.fitProductToContainer(product, newContainer);
                 if (nProductFitted <= 0) continue;
                 while (quantity > 0) {
-                    emptyVolume += newContainer.volume() - nProductFitted * volume(product.dimensions);
+                    const actualQuantity = Math.min(nProductFitted, quantity);
+                    emptyVolume += newContainer.volume() - actualQuantity * volume(product.dimensions);
                     containers.push({
                         containerType: newContainer.containerType,
                         containingProducts: [{
                             id: product.id,
-                            quantity: Math.min(nProductFitted, quantity)
+                            quantity: actualQuantity
                         }]
                     });
                     quantity -= nProductFitted;
