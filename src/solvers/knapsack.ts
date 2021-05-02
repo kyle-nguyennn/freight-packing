@@ -19,8 +19,7 @@ export class DFSKnapsack3DSolver extends BLFHeuristic implements Knapsack3DSolve
                 objType.quantity--;
                 for (let orientedObj of objType.dimensions.allOrientations())
                 if (canFit(container, orientedObj)) {
-                // for (let orientedObj of [objType.dimensions]) {
-                    // mergeSpace should be functional
+                    // mergeSpace should be functional - no mutate input
                     let localResult: Item[] = [
                         {
                             dimensions: orientedObj,
