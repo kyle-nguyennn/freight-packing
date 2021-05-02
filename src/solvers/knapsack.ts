@@ -1,5 +1,5 @@
 import { Item, TripleShape } from "../models/shape";
-import { BLFHeuristic } from "../mixin/blf-heuristic";
+import { BLFHeuristic } from "./blf-heuristic";
 import { canFit, emptySpace, mergeSpace } from "../utils";
 
 const MAX_VOLUME = 1e15; // 1km^3

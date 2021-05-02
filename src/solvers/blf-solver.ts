@@ -17,15 +17,6 @@ export class BLFSolver implements ISolver {
         return 0;
     }
 
-    splitSpace(containerDim: Dimensions, occupiedDim: Dimensions): Dimensions[] {
-        // in this class empty space will be split by occupied object into top, front, and right
-        // TODO: move out into a mixin
-        const top = [occupiedDim.length, occupiedDim.width, containerDim.height - occupiedDim.height];
-        const front = [occupiedDim.length, containerDim.width - occupiedDim.width, containerDim.height];
-        const right = [containerDim.length - occupiedDim.length, containerDim.width, containerDim.height];
-        return [arrayToDimension(top), arrayToDimension(front), arrayToDimension(right)];
-    }
-
     fitProductsToContainer(products: Product[], container: ContainerState): {
         containerResult: ContainerResult,
         emptyVolume: number
@@ -63,8 +54,9 @@ export class BLFSolver implements ISolver {
             const product = products.find(product => product.id === productId);
             if (product) product.orderedQuantity -= item.quantity;
             return {
-            id: shapeToProductIdMap[item.dimensions.serialize()],
-            quantity: item.quantity}
+                id: shapeToProductIdMap[item.dimensions.serialize()],
+                quantity: item.quantity
+            }
         });
         if (containerResult.containingProducts.length === 0) return null;
         return result;

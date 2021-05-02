@@ -1,6 +1,10 @@
 import { TripleShape } from "../models/shape";
 
-export class BLFHeuristic {
+export interface SpaceDivisable {
+    splitSpace(container: TripleShape, obj: TripleShape): TripleShape[];
+}
+export class BLFHeuristic implements SpaceDivisable{
+    // in this class empty space will be split by occupied object into top, front, and right
     splitSpace(container: TripleShape, obj: TripleShape): TripleShape[] {
         const result: TripleShape[] = [];
         if (container.height > obj.height)
