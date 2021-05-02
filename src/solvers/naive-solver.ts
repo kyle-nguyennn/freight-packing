@@ -5,6 +5,7 @@ import { dimensionsToArray, volume, zip } from "../utils";
 import { ISolver } from "./solver-base";
 
 export class FirstFitSolver implements ISolver {
+    // My naive implementation: first fit
     fitProductToContainer(product: Product, container: ContainerState): number {
         let productDims = dimensionsToArray(product.dimensions);
         let containerDims = dimensionsToArray(container.dimensions);
@@ -42,7 +43,7 @@ export class FirstFitSolver implements ISolver {
                 }
             }
             if (quantity > 0) { // there's no container to hold this product
-                throw Error("Cannot fit product into any conainer.")
+                throw Error("Cannot fit product into any container.")
             }
         }
         return {
@@ -50,5 +51,4 @@ export class FirstFitSolver implements ISolver {
             emptyVolume: emptyVolume
         };
     }
-
 }

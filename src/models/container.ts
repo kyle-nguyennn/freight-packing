@@ -1,5 +1,6 @@
 import { ContainerSpec, Dimensions } from "../interfaces";
 import { volume } from "../utils";
+import { TripleShape } from "./shape";
 
 export class ContainerState implements ContainerSpec{
     constructor(public containerType: string, public dimensions: Dimensions,
@@ -19,4 +20,7 @@ export class ContainerState implements ContainerSpec{
             dimensions: this.dimensions
         }
     }
+
+    getShape = (): TripleShape => new TripleShape(
+        this.dimensions.length, this.dimensions.width, this.dimensions.height);
 }
