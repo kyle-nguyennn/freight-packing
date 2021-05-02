@@ -29,7 +29,7 @@ export class BLFSolver implements ISolver {
     fitProductsToContainer(products: Product[], container: ContainerState): {
         containerResult: ContainerResult,
         emptyVolume: number
-    } {
+    } | null {
         /**
          * Fits one product in products into container and recursively call itself on the empty space of the container with the rest of the products
          * NOTE: The method mutate the state of products
@@ -58,10 +58,15 @@ export class BLFSolver implements ISolver {
             ({...m, [TripleShape.fromDimensions(product.dimensions).serialize()]: product.id}),
             {});
         result.emptyVolume = emptySpace(container.getShape(), knapsackSol);
-        containerResult.containingProducts = knapsackSol.map(item => ({
+        containerResult.containingProducts = knapsackSol.map(item => {
+            const productId = shapeToProductIdMap[item.dimensions.serialize()];
+            const product = products.find(product => product.id === productId);
+            if (product) product.orderedQuantity -= item.quantity;
+            return {
             id: shapeToProductIdMap[item.dimensions.serialize()],
-            quantity: item.quantity
-        }));
+            quantity: item.quantity}
+        });
+        if (containerResult.containingProducts.length === 0) return null;
         return result;
     }
 
@@ -85,7 +90,7 @@ export class BLFSolver implements ISolver {
                 }
             } while (result); // can fit any more product into this type of container anymore
         }
-        if (zeroProduct(productList)) throw Error("Cannot fit product into any container.")
+        if (!zeroProduct(productList)) throw Error("Cannot fit product into any container.")
         return {
             containerResults: containerResults,
             emptyVolume: emptyVolume

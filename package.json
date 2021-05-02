@@ -14,7 +14,7 @@
   "scripts": {
     "testCases": "jest --testPathPattern=src/__tests__/testCases",
     "unitTests": "jest --testPathPattern=src/__tests__/unitTests --coverage",
-    "debug": "jest --testPathPattern=src/__tests__/unitTests/knapsack.test.ts --coverage",
+    "debug": "jest --testPathPattern=src/__tests__/unitTests/packOrders.test.ts --coverage",
     "helloWorld": "jest helloWorld.test.ts"
   }
 }

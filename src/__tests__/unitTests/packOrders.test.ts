@@ -70,7 +70,6 @@ describe("Orders Packing Test Cases", () => {
     );
   });
 
-  /*
   test("Given a large order, pack it using multiple containers, without exceeding maximum capacity of any containers", () => {
     const orderRequest: ExtendedOrderRequest = {
       id: "ORDER-002",
@@ -208,5 +207,4 @@ describe("Orders Packing Test Cases", () => {
       expectedShipmentRecord
     );
   });
-  */
 });
