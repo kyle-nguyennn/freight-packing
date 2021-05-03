@@ -1,7 +1,9 @@
 import { Dimensions } from "../interfaces";
 import { permutator } from "../utils";
 
-export class TripleShape implements Omit<Dimensions, "unit"> {
+export type Shape = Omit<Dimensions, "unit">;
+
+export class TripleShape implements Shape {
     constructor(public length: number, public width: number, public height: number) {}
     static fromList(arr: number[]) {
         if (arr.length !== 3) throw Error("Array must have length 3 to be converted to a TripleShape.");
@@ -21,6 +23,10 @@ export class TripleShape implements Omit<Dimensions, "unit"> {
     }
     serialize = (): string => this.length.toString() + '|' + this.width.toString() + '|' + this.height.toString();
     static deserialize = (str: string): TripleShape => TripleShape.fromList(str.split('|').map(str => parseFloat(str)));
+
+    equals = (other: TripleShape) => this.serialize() === other.serialize(); // same in dimensions and orientation
+    isomorphic = (other: TripleShape) => this.allOrientations().some(shape => shape.equals(other))
+    baseForm = () => TripleShape.fromList(this.dimensionsToList().sort());
 }
 
 export type Item = {dimensions: TripleShape, quantity: number};

@@ -1,6 +1,6 @@
 import { ContainerSpec, Dimensions } from "./interfaces";
 import { ContainerResult, Product } from "./models/extended-types";
-import { TripleShape, Item } from "./models/shape";
+import { Shape, TripleShape, Item } from "./models/shape";
 
 export const UNIT_LENGTH = "centimeter";
 export const UNIT_VOLUME = "cubic centimeter";
@@ -77,6 +77,7 @@ export function emptySpace(container: TripleShape, items: Item[]) {
 
 export function mergeSpace(...args: Readonly<Item>[][]): Item[] {
     // merge disjoined space
+    // take orientation of shape into account
     let items: {[itemId: string]: number} = {};
     for (let itemList of args) {
         for (let item of itemList) {
@@ -90,5 +91,25 @@ export function mergeSpace(...args: Readonly<Item>[][]): Item[] {
     }));
 }
 
-export const canFit = (container: TripleShape, obj: TripleShape): boolean =>
+export function mergeIsoSpace(...args: Readonly<Item>[][]): Item[] {
+    // form of the same isomorphic shape take priority from left to right in args
+    let items: {[itemId: string]: Item[]} = {};
+    args.forEach(itemList =>
+        itemList.forEach(item => {
+            const baseForm = item.dimensions.baseForm().serialize();
+            items[baseForm] = [...items[baseForm]??[], item];
+        })
+    )
+    return Object.entries(items).map(([_, items]) => ({
+        dimensions: items[0].dimensions,
+        quantity: items.reduce((cum, item) => cum + item.quantity, 0)
+    }));
+}
+
+// canFit check if obj fits in container in the current orientation
+export const canFit = (container: Shape, obj: Shape): boolean =>
     zip(Object.values(obj), Object.values(container)).every(([a, b]) => a <= b);
+
+export const canIsoFit = (container: Shape, obj: Shape): boolean =>
+    zip(Object.values(obj).sort(), Object.values(container).sort())
+    .every(([a, b]) => a <= b);

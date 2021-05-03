@@ -16,4 +16,9 @@ describe("Shape Test Cases", () => {
     const shape = new TripleShape(1, 2, 3);
     expect(shape.allOrientations().length).toEqual(6);
   });
+  test("Shape equal", () => {
+    const shape1 = new TripleShape(1, 2, 3);
+    const shape2 = new TripleShape(1, 2, 3);
+    expect(shape1.equals(shape2)).toBeTruthy();
+  });
 });
