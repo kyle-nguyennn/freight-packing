@@ -67,7 +67,6 @@ describe("Knapsack Test Cases", () => {
         expect(result.length).toEqual(expected.length);
         expect(result[0].quantity).toEqual(expected[0].quantity);
     });
-
     test("Not enough objects to fill container 1", () => {
         const container = new TripleShape(2, 1, 1);
         const objs: Item[] = [
