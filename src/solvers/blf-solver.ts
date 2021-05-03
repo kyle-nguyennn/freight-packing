@@ -3,13 +3,13 @@ import { ContainerState } from "../models/container";
 import { ContainerResult, Product } from "../models/extended-types";
 import { ISolver } from "./solver-base";
 import * as _ from "lodash";
-import { emptySpace, zeroProduct } from "../utils";
+import { canIsoFit, emptySpace, zeroProduct } from "../utils";
 import { Knapsack3DSolver, DFSKnapsack3DSolver } from "./knapsack";
 import { Item, TripleShape } from "../models/shape";
 
 export class BLFSolver implements ISolver {
     private knapsackSolver: Knapsack3DSolver;
-    constructor() {
+    constructor(private max_iter = 10) {
         // TODO: implement dependency injection for this
         this.knapsackSolver = new DFSKnapsack3DSolver();
     }
@@ -62,7 +62,7 @@ export class BLFSolver implements ISolver {
         return result;
     }
 
-    solve(containerSpecs: ContainerSpec[], products: Product[]): {
+    solve_one(containerSpecs: ContainerSpec[], products: Product[]): {
         containerResults: ContainerResult[],
         emptyVolume: number
     } {
@@ -70,7 +70,10 @@ export class BLFSolver implements ISolver {
         let emptyVolume = 0;
         // create new productList because there will be side effect changing product list
         const productList = _.cloneDeep(products);
-        for (let containerSpec of containerSpecs) {
+        // guaranteed to end
+        while (!zeroProduct(productList)) {
+            const randomIdx = Math.floor(Math.random() * containerSpecs.length);
+            const containerSpec = containerSpecs[randomIdx];
             let result;
             do { // greedily fit products into this type of container until cannot anymore
                 const newContainer = ContainerState.fromContainerSpec(containerSpec);
@@ -82,10 +85,28 @@ export class BLFSolver implements ISolver {
                 }
             } while (result); // can fit any more product into this type of container anymore
         }
-        if (!zeroProduct(productList)) throw Error("Cannot fit product into any container.")
         return {
             containerResults: containerResults,
             emptyVolume: emptyVolume
         };
+    }
+
+    solve(containerSpecs: ContainerSpec[], products: Product[]): {
+        containerResults: ContainerResult[],
+        emptyVolume: number
+    } {
+        if (products.some(product =>
+            containerSpecs.every(containerSpec => !canIsoFit(containerSpec.dimensions, product.dimensions))
+        )) throw Error("Cannot fit product into any container.");
+
+        let result = this.solve_one(containerSpecs, products);
+        // since solve_one is randomized in nature, run a few times to get the best result
+        for (let iter=1; iter < this.max_iter; iter++) {
+            const temp = this.solve_one(containerSpecs, products);
+            if (result.emptyVolume > temp.emptyVolume)
+                result = temp;
+        }
+        return result;
+
     }
 }

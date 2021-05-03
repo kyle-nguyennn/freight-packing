@@ -67,4 +67,51 @@ describe("Knapsack Test Cases", () => {
         expect(result.length).toEqual(expected.length);
         expect(result[0].quantity).toEqual(expected[0].quantity);
     });
+    test("Not enough objects to fill container 1", () => {
+        const container = new TripleShape(2, 1, 1);
+        const objs: Item[] = [
+            {
+                dimensions: new TripleShape(1, 1, 1),
+                quantity: 1
+            }];
+        const result = solver.solve(objs, container);
+        const expected = [{
+            dimensions: new TripleShape(1, 1, 1),
+            quantity: 1
+        }];
+        expect(result.length).toEqual(expected.length);
+        expect(result[0].quantity).toEqual(expected[0].quantity);
+    });
+
+    test("Not enough objects to fill container 2", () => {
+        const container = new TripleShape(2, 2, 2);
+        const objs: Item[] = [
+            {
+                dimensions: new TripleShape(2, 1, 1),
+                quantity: 2
+            }];
+        const result = solver.solve(objs, container);
+        const expected = [{
+            dimensions: new TripleShape(2, 1, 1),
+            quantity: 2
+        }];
+        expect(result.length).toEqual(expected.length);
+        expect(result[0].quantity).toEqual(expected[0].quantity);
+    });
+
+    test("Complete large case", () => {
+        const container = new TripleShape(30, 30, 30);
+        const objs: Item[] = [
+            {
+                dimensions: new TripleShape(10, 5, 5),
+                quantity: 16
+            }];
+        const result = solver.solve(objs, container);
+        const expected = [{
+            dimensions: new TripleShape(10, 5, 5),
+            quantity: 16
+        }];
+        expect(result.length).toEqual(expected.length);
+        expect(result[0].quantity).toEqual(expected[0].quantity);
+    });
 });

@@ -1,6 +1,7 @@
 import { Dimensions } from "../../interfaces";
 import { Item, TripleShape } from "../../models/shape";
-import { canFit, dimensionsToArray, emptySpace, mergeSpace, permutator, zip } from "../../utils";
+import { canFit, dimensionsToArray, emptySpace, mergeIsoSpace, mergeSpace, permutator, zip } from "../../utils";
+
 
 describe("Utility functions Test Cases", () => {
   test("Zip 2 arrays of number", () => {
@@ -67,4 +68,27 @@ describe("Utility functions Test Cases", () => {
     expect(mergeSpace(items1, items2)[0].quantity).toBe(3);
   });
 
+  test("Test compare isomorphic space", () => {
+    const shape1 = new TripleShape(1, 2, 3);
+    const shape2 = new TripleShape(2, 1, 3);
+    expect(shape1.isomorphic(shape2)).toBeTruthy();
+  });
+
+  test("Test merge iso space", () => {
+    const items1: Item[] = [{
+      dimensions: new TripleShape(3, 1, 2),
+      quantity: 1
+    }];
+    const items2: Item[] = [{
+      dimensions: new TripleShape(2, 1, 3),
+      quantity: 2
+    }];
+    const expected: Item[] = [{
+      dimensions: new TripleShape(3, 1, 2),
+      quantity: 3
+    }];
+    const result = mergeIsoSpace(items1, items2);
+    expect(result.length).toEqual(expected.length);
+    expect(result[0].quantity).toEqual(expected[0].quantity);
+  });
 });

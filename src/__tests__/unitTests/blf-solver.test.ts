@@ -207,4 +207,47 @@ describe("Orders Packing Test Cases", () => {
       expectedShipmentRecord
     );
   });
+
+  test("Pack alot of small products into containes", () => {
+    const orderRequest: ExtendedOrderRequest = {
+      id: "ORDER-005",
+      products: [
+        {
+          id: "PRODUCT-005",
+          name: "ALMOST-GREAT FORTUNE COOKIES",
+          orderedQuantity: 16,
+          unitPrice: 13.4,
+          dimensions: {
+            unit: "centimeter",
+            length: 10,
+            width: 5,
+            height: 5,
+          },
+        },
+      ],
+      solver: 'BLFSolver'
+    };
+    const expectedShipmentRecord: ShipmentRecord = {
+      orderId: "ORDER-005",
+      totalVolume: {
+        unit: "cubic centimeter",
+        value: 4000,
+      },
+      containers: [
+        {
+          containerType: "Cardboard B",
+          containingProducts: [
+            {
+              id: "PRODUCT-005",
+              quantity: 16,
+            },
+          ],
+        },
+      ],
+    };
+
+    expect(orderHandler.packOrder(orderRequest)).toEqual(
+      expectedShipmentRecord
+    );
+  });
 });

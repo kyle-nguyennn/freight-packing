@@ -1,8 +1,6 @@
 import { Item, TripleShape } from "../models/shape";
 import { BLFHeuristic } from "./blf-heuristic";
-import { canFit, emptySpace, mergeSpace } from "../utils";
-
-const MAX_VOLUME = 1e15; // 1km^3
+import { canFit, emptySpace, mergeIsoSpace, mergeSpace } from "../utils";
 
 export interface Knapsack3DSolver {
     solve(objs: Item[], container: TripleShape): Item[];
@@ -16,9 +14,10 @@ export class DFSKnapsack3DSolver extends BLFHeuristic implements Knapsack3DSolve
         let resultEmptySpace = emptySpace(container, result);
         for (let objType of objs) {
             if (objType.quantity > 0) {
-                objType.quantity--;
                 for (let orientedObj of objType.dimensions.allOrientations())
                 if (canFit(container, orientedObj)) {
+                    objs.filter(obj => obj.dimensions.isomorphic(orientedObj))
+                        .forEach(obj => obj.quantity--);
                     // mergeSpace should be functional - no mutate input
                     let localResult: Item[] = [
                         {
@@ -31,16 +30,23 @@ export class DFSKnapsack3DSolver extends BLFHeuristic implements Knapsack3DSolve
                     // is the reponsibility of the BLFHeuristic, I don't care how to partition the subproblems
                     const subContainers: TripleShape[] = this.splitSpace(container, orientedObj);
                     for (let subContainer of subContainers) {
-                        localResult = mergeSpace(localResult, this.knapsack(objs, subContainer));
+                        const childResult:Item[] = this.knapsack(objs, subContainer); // this line does not change obj at all, since all the decrement has a corresponding increment
+                        // changes in each child decision affect each other, since they are in the same universe
+                        // apply back child changes to obj
+                        childResult.forEach(item => {
+                            objs.filter(obj => obj.dimensions.isomorphic(item.dimensions))
+                                .map(obj => obj.quantity -= item.quantity)
+                        });
+                        localResult = mergeSpace(localResult, childResult);
                     }
                     const localEmptySpace = emptySpace(container, localResult);
                     if (localEmptySpace < resultEmptySpace) {
                         result = localResult;
                         resultEmptySpace = localEmptySpace;
                     }
-
+                    // undo all decrement to objs in this branch of the universe
+                    Object.assign(objs, mergeIsoSpace(objs, localResult));
                 }
-                objType.quantity++;
             }
         }
         return result;
